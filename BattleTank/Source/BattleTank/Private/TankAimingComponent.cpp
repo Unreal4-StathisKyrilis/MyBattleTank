@@ -1,8 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
+#include "TankBarrel.h"
 #include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/StaticMeshComponent.h" 
+
+
+
+class UTankBarrel; // forward declaration
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -15,42 +21,49 @@ UTankAimingComponent::UTankAimingComponent()
 }
 
 
-void UTankAimingComponent::SetBarellReference(UStaticMeshComponent * BarrelToSet)
+void UTankAimingComponent::SetBarellReference(UTankBarrel * BarrelToSet)
 {
 
 	Barell = BarrelToSet;
 }
 
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
 
-	// ...
-	
-}
-
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	//auto ourTankName = GetOwner()->GetName();
+	auto TankName = GetOwner()->GetName();
 	//auto BarelLocation = Barell->GetComponentLocation().ToString();
 	if (!Barell) { return; }
+		FVector OutLaunchVelocity(0);                               
+		FVector StartLocation = Barell->GetSocketLocation(FName("Projectile"));
+		bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity
+		(
+			this,
+			OutLaunchVelocity,
+			StartLocation,
+			HitLocation,
+			LaunchSpeed,
+			ESuggestProjVelocityTraceOption::DoNotTrace
+		);
 
-	FVector OutLaunchVelocity(0);                               
-	FVector StartLocation = Barell->GetSocketLocation(FName("Projectile"));
 
-	// Calculate the OutLaunchVelocity
-
-	auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-	UE_LOG(LogTemp, Warning, TEXT("firing at %f speed, at location %s"), LaunchSpeed,*AimDirection.ToString());
+		if (bHaveAimSolution)
+		{
+			auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+			MoveBarelTowards(AimDirection);
+			}
+	//if no solution found do nothing
 }
 
+void UTankAimingComponent::MoveBarelTowards(FVector AimDirection)
+{
+
+	//Wok-out Difference of Current Barel Rotation and Aim Direction
+	auto BarelRotation = Barell->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - BarelRotation;
+
+
+	Barell->Elevate(5); // TODO remove magic number
+
+}
