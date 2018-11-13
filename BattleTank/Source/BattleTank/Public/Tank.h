@@ -27,8 +27,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 		TSubclassOf<AProjectile> ProjectileBlueprint;  
 
+	//UPROPERTY(EditAnywhere, Category = "Firing")	// each tank has its own firing rate
+	UPROPERTY(EditDefaultsOnly, Category = "Firing") // all tanks has the same firing speed
+		float ReloadTimeInSeconds = 3;
+
 	//local barrel reference for spawning projectile
 	UTankBarrel* Barrel = nullptr;
+
+	
+	double LastFireTime = 0;
 
 protected:
 	// Called when the game starts or when spawned
