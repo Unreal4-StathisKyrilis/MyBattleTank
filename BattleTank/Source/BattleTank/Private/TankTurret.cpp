@@ -18,5 +18,5 @@ void UTankTurret::Rotate(float RelativeSpeed)
 
 	SetRelativeRotation(FRotator(0,Rotation, 0));
 
-	UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution Found at : %f"), Time, RelativeSpeed);
+	//UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution Found at : %f"), Time, RelativeSpeed);
 }

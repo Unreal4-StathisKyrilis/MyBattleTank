@@ -24,5 +24,5 @@ void UTankBarrel::Elevate(float RelativeSpeed)
 
 	SetRelativeRotation(FRotator(Elevation, 0, 0));
 
-	UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution Found at : %f"), Time,RelativeSpeed);
+	//UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution Found at : %f"), Time,RelativeSpeed);
 }
