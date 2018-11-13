@@ -21,7 +21,7 @@ private:
 	ATank();
 
 	UPROPERTY(EditAnywhere, Category = "Firing")
-		float LaunchSpeed = 40; // 0.40m/s   starting value
+		float LaunchSpeed = 4000; // 0.40m/s   starting value
 
 
 
