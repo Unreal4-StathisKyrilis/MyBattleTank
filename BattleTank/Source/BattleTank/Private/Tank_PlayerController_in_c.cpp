@@ -1,16 +1,22 @@
 // Copyright Stathis Kyrilis
 
 #include "Tank_PlayerController_in_c.h"
+#include "TankAimingComponent.h"
 #include "Engine/World.h"
-
-// Tick
-	// Super
-
 
 void ATank_PlayerController_in_c::BeginPlay()
 {
 	Super::BeginPlay();
 	auto ControlledTank = GetControlledTank();
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (AimingComponent) {
+		FoundAimingComponent(AimingComponent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Controller cant find Aiming Component at begin play"));
+	}
+	
 	if (!ControlledTank)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Tank Owner"));

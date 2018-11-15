@@ -46,6 +46,7 @@ protected:
 
 
 public:	
+	virtual void BeginPlay();
 	void AimAt(FVector HitLocation);
 	
 	UFUNCTION(BlueprintCallable, Category = "Firing")
