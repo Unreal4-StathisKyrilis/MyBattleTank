@@ -1,4 +1,4 @@
-// Copyright Stathis Kyrilis
+ // Copyright Stathis Kyrilis
 
 #pragma once
 

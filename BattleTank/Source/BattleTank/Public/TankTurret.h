@@ -18,6 +18,6 @@ public:
 
 private :
 
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		float MaxDegreesPerSecond = 0.07; // default
  };

@@ -31,17 +31,13 @@ private:
 	//UPROPERTY(EditAnywhere, Category = "Firing")	// each tank has its own firing rate
 	UPROPERTY(EditDefaultsOnly, Category = "Firing") // all tanks has the same firing speed
 		float ReloadTimeInSeconds = 3;
-
-	//local barrel reference for spawning projectile
-	UTankBarrel* Barrel = nullptr;
-
 	
 	double LastFireTime = 0;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	//local barrel reference for spawning projectile
+	UTankBarrel* Barrel = nullptr; //TODO Remove
 
+protected:
 	UPROPERTY(BlueprintReadOnly)
 		UTankAimingComponent* TankAimingComponent = nullptr;
 
@@ -52,15 +48,6 @@ protected:
 public:	
 	void AimAt(FVector HitLocation);
 	
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetBarelReference(UTankBarrel* BarelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetTurretReference(UTankTurret* TurretToSet);
-
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 		void Fire();
 };
