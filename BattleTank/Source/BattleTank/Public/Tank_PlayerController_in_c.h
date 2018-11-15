@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stathis Kyrilis
 
 #pragma once
 
@@ -15,10 +15,14 @@ class BATTLETANK_API ATank_PlayerController_in_c : public APlayerController
 {
 	GENERATED_BODY()
 
+protected :
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		ATank* GetControlledTank() const;
+
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	ATank* GetControlledTank() const;
+
 
 	//Start the Tank moving the barrel so tha a shot would 
 	void AimTowardsCrossHair();
