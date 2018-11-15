@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stathis Kyrilis
 
 #include "TankMovementComponent.h"
 #include "TankTrack.h"
@@ -8,7 +8,6 @@ void UTankMovementComponent::Initilise(UTankTrack* LeftTrackToSet, UTankTrack* R
 {
 	LeftTrack = LeftTrackToSet;
 	RightTrack = RightTrackToSet;
-
 }
 
 void UTankMovementComponent::IntendMoveForward(float Throw)
@@ -16,20 +15,13 @@ void UTankMovementComponent::IntendMoveForward(float Throw)
 	if (!LeftTrack || !RightTrack) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
-	// TODO Prevent double speed when using 2 methods at the same time
 }
 
 void UTankMovementComponent::IntendTurnRight(float Throw)
 {
 	if (!LeftTrack || !RightTrack) { return; }
-	//auto Time = GetWorld()->GetTimeSeconds();
-	//UE_LOG(LogTemp, Warning, TEXT("Intend Turn Right :%f"), Throw);
-
 	LeftTrack->SetThrottle(Throw*1.5f);
 	RightTrack->SetThrottle(-Throw*1.5f);
-
-	// TODO Prevent double speed when using 2 methods at the same time
-
 }
 
 void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed)
@@ -46,7 +38,5 @@ void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, boo
 	auto RightThrow = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
 	IntendTurnRight(RightThrow);
 
-	//UE_LOG(LogTemp, Warning, TEXT("%s vectoring to %s"), *TankName, *MoveVelocityString);
-
-
+	UE_LOG(LogTemp, Warning, TEXT("Right: %f, Forward: %f "), RightThrow, ForwardThrow);
 }

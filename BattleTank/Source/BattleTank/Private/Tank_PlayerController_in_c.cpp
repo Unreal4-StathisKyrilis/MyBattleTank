@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stathis Kyrilis
 
 #include "Tank_PlayerController_in_c.h"
 #include "Engine/World.h"

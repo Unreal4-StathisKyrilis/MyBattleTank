@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stathis Kyrilis
 
 #pragma once
 
@@ -19,7 +19,7 @@ private :
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	//How close AI Tank gets to the player (in cm)
-	float AcceptanceRadius = 100;
+	float AcceptanceRadius = 1000;
 	
 };
 
