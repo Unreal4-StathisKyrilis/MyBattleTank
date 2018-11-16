@@ -9,7 +9,6 @@
 
 //Forward Declarations
 class UTankBarrel;
-class UTankAimingComponent;
 class AProjectile;
 
 UCLASS()
@@ -37,14 +36,9 @@ private:
 	//local barrel reference for spawning projectile
 	UTankBarrel* Barrel = nullptr; //TODO Remove
 
-protected:
-	UPROPERTY(BlueprintReadOnly)
-		UTankAimingComponent* TankAimingComponent = nullptr;
-
-
 public:	
 	virtual void BeginPlay();
-	void AimAt(FVector HitLocation);
+	
 	
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 		void Fire();

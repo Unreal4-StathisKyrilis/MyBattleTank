@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Tank.h"
 #include "Tank_PlayerController_in_c.generated.h"
 
 class UTankAimingComponent;
@@ -18,9 +17,6 @@ class BATTLETANK_API ATank_PlayerController_in_c : public APlayerController
 	GENERATED_BODY()
 
 protected :
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		ATank* GetControlledTank() const;
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 		void FoundAimingComponent(UTankAimingComponent* AimCompRef);
 

@@ -7,9 +7,9 @@
 void ATank_PlayerController_in_c::BeginPlay()
 {
 	Super::BeginPlay();
-	auto ControlledTank = GetControlledTank();
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
-	if (!ensure(AimingComponent)) {return;}
+	auto ControlledTank = GetPawn();
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 	FoundAimingComponent(AimingComponent);
 }
 
@@ -21,15 +21,10 @@ void ATank_PlayerController_in_c::Tick(float DeltaTime)
 }
 
 
-ATank* ATank_PlayerController_in_c::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-
-}
-
 void ATank_PlayerController_in_c::AimTowardsCrossHair()
 {
-	if (!ensure(GetControlledTank())) { return; }
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
@@ -40,7 +35,7 @@ void ATank_PlayerController_in_c::AimTowardsCrossHair()
 
 	//if it hits the landcsape
 			// TODO Tell Controlled tank to aim at this point
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 
 	}
 }
