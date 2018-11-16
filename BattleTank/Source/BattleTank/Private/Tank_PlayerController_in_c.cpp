@@ -9,7 +9,7 @@ void ATank_PlayerController_in_c::BeginPlay()
 	Super::BeginPlay();
 	auto ControlledTank = GetControlledTank();
 	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
-	if (AimingComponent) {
+	if (ensure(AimingComponent)) {
 		FoundAimingComponent(AimingComponent);
 	}
 	else
@@ -43,7 +43,7 @@ ATank* ATank_PlayerController_in_c::GetControlledTank() const
 
 void ATank_PlayerController_in_c::AimTowardsCrossHair()
 {
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {

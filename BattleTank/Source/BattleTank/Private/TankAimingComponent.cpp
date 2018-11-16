@@ -22,7 +22,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
 	auto TankName = GetOwner()->GetName();
 	//auto BarelLocation = Barell->GetComponentLocation().ToString();
-	if (!Barell) { return; }
+	if (!ensure(Barell)) { return; }
 		FVector OutLaunchVelocity(0);                               
 		FVector StartLocation = Barell->GetSocketLocation(FName("Projectile"));
 		bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity
@@ -52,7 +52,7 @@ void UTankAimingComponent::MoveBarelTowards(FVector AimDirection)
 {
 
 	//Wok-out Difference of Current Barel Rotation and Aim Direction
-	if (!Barell || !Turret) { return; }
+	if (!ensure(Barell) || (!ensure(Turret))) { return; }
 	auto BarelRotation = Barell->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarelRotation;
