@@ -21,6 +21,7 @@ private:
 	// Sets default values for this pawn's properties
 	ATank();
 
+	// TODO remove once firing is moved to aiming Component
 	UPROPERTY(EditAnywhere, Category = "Firing")
 		float LaunchSpeed = 4000; // 0.40m/s   starting value
 
