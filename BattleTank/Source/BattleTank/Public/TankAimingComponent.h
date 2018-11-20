@@ -31,18 +31,29 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 		void Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
+	bool IsBarrelMoving();
+
 	void AimAt(FVector HitLocation);
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 		void Fire();
 
+	EFiringState GetFiringState() const;
+
+
 protected :
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-		EFiringState FiringState = EFiringState::Locked;
+		EFiringState FiringState = EFiringState::Reloading;
+	
+	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 
 private:
 	UTankAimingComponent();
+
+
 
 	void MoveBarelTowards(FVector AimDirection);
 
@@ -57,9 +68,11 @@ private:
 
 	//UPROPERTY(EditAnywhere, Category = "Firing")	// each tank has its own firing rate
 	UPROPERTY(EditDefaultsOnly, Category = "Firing") // all tanks has the same firing speed
-		float ReloadTimeInSeconds = 3;
+		float ReloadTimeInSeconds = 1;
 
 	double LastFireTime = 0;
+
+	FVector AimDirection;
 
 
 };

@@ -6,26 +6,67 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/StaticMeshComponent.h" 
+#include "ConstructorHelpers.h"
 #include "Projectile.h"
 
 
 //class UTankBarrel; // forward declaration
 
-// Sets default values for this component's properties
+// UTankAimingComponent Constructor. Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	//bWantsBeginPlay = true;
-	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
+	//Sets manually the AimingComponenent to ProjectileBP due to a bug , cant save it in Unreal Editor)
+		static ConstructorHelpers::FClassFinder<AProjectile> Proj(TEXT("/Game/3D/Tank/Projectile_BP"));
+		if (Proj.Class)
+		{
+			ProjectileBlueprint = Proj.Class;
+		}
+		PrimaryComponentTick.bCanEverTick = true;
 }
+
+void UTankAimingComponent::BeginPlay()
+{
+	//wait the initial reload time before firing
+	LastFireTime = FPlatformTime::Seconds();
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+{
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	{
+		FiringState = EFiringState::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
+	{
+		FiringState = EFiringState::Locked;
+
+	}
+
+	//TODO Handle aiming and Firing State
+}
+
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
+}
+
 
 void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
 {
 	Barell = BarrelToSet;
 	Turret = TurretToSet;
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+
+	if (!ensure(Barell)) { return false; }
+	auto BarrelForward = Barell->GetForwardVector();
+	return (!BarrelForward.Equals(AimDirection, 0.01)); // not equal
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
@@ -35,6 +76,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	if (!ensure(Barell)) { return; }
 		FVector OutLaunchVelocity(0);                               
 		FVector StartLocation = Barell->GetSocketLocation(FName("Projectile"));
+		TArray<AActor*> ActorIgnoreList;
+		ActorIgnoreList.Add(GetOwner());
+		ActorIgnoreList.Add(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+
 		bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity
 		(
 			this,
@@ -45,13 +91,17 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 			false,
 			0,
 			0,
-			ESuggestProjVelocityTraceOption::DoNotTrace
-		);
+			ESuggestProjVelocityTraceOption::DoNotTrace,
+			FCollisionResponseParams::DefaultResponseParam,
+			ActorIgnoreList,
+			false); // Draw Line of Trajectory
+		
 
 		if (bHaveAimSolution)
 		{
-			auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+			AimDirection = OutLaunchVelocity.GetSafeNormal();
 			MoveBarelTowards(AimDirection);
+			//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 5.f);
 
 		} else {
 			//if no solution do nothing
@@ -67,19 +117,23 @@ void UTankAimingComponent::MoveBarelTowards(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarelRotation;
 
-
+	// always , yaw the shortest way 
 	Barell->Elevate(DeltaRotator.Pitch); // -1...1
-	Turret->Rotate(DeltaRotator.Yaw);
-
+	if (FMath::Abs(DeltaRotator.Yaw) < 180)
+	{
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turret->Rotate(-DeltaRotator.Yaw);
+	}
 }
 
 void UTankAimingComponent::Fire()
 {
-	if (!ensure(Barell && ProjectileBlueprint)) { return; }
-
-	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-
-	if (isReloaded) {
+	if (FiringState != EFiringState::Reloading) 
+	{
+		if (!ensure(Barell && ProjectileBlueprint)) { return; }
 		// spawn a projectile at the socket location on the  barrel
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
 			ProjectileBlueprint, 
@@ -91,3 +145,6 @@ void UTankAimingComponent::Fire()
 	}
 
 }
+
+
+
