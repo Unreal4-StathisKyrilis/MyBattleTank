@@ -15,7 +15,7 @@ protected :
 
 	//How close AI Tank gets to the player (in cm)
 	UPROPERTY(EditDefaultsOnly, Category = "Setup") // TODO Consider putting EditDefaultsOnly here
-		float AcceptanceRadius = 10000;
+		float AcceptanceRadius = 80000;
 
 private :
 	virtual void BeginPlay() override;
