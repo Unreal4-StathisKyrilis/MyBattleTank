@@ -15,13 +15,16 @@ protected :
 
 	//How close AI Tank gets to the player (in cm)
 	UPROPERTY(EditDefaultsOnly, Category = "Setup") // TODO Consider putting EditDefaultsOnly here
-		float AcceptanceRadius = 80000;
+		float AcceptanceRadius = 8000;
 
 private :
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void SetPawn(APawn* InPawn) override;
 
+	UFUNCTION()
+		void OnPosessedTankDeath();
 	
 };
 

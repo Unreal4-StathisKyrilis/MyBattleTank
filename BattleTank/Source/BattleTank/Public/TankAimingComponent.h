@@ -69,7 +69,7 @@ private:
 		TSubclassOf<AProjectile> ProjectileBlueprint;
 	
 	UPROPERTY(EditAnywhere, Category = "Firing")
-		float LaunchSpeed = 8000; // 0.40m/s   starting value
+		float LaunchSpeed = 4000; // 0.40m/s   starting value
 	   
 	//UPROPERTY(EditAnywhere, Category = "Firing")	// each tank has its own firing rate
 	UPROPERTY(EditDefaultsOnly, Category = "Firing") // all tanks has the same firing speed
